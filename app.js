@@ -37,6 +37,7 @@ app.use(express.static("./public"));
 const userRouter = require('./routes/user-routes');
 const jobsRouter = require("./routes/jobs-routes");
 const googAuthRouter = require("./routes/googAuth-routes");
+const geminiRouter = require("./routes/gemini-route");
 
 const errorHandlerMiddleware = require("./middleware/error-handler")
 
@@ -59,6 +60,7 @@ app.get("/", (req, res) => {
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/jobs', jobsRouter);
 app.use('/api/v1/gauth', googAuthRouter);
+app.use("/api/v1/gemini", geminiRouter);
 
 app.use(errorHandlerMiddleware);
 
