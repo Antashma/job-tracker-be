@@ -1,13 +1,20 @@
 const express = require("express");
-const app = express();
-const connectDB = require("./db/connect");
+require("express-async-errors");
 const dotenv = require('dotenv');
 const passport = require("passport");
 const morgan = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const connectDB = require("./db/connect");
 
+//extra security packages
+const helmet = require("helmet");
+const cors = require("cors");
+const rateLimiter = require("express-rate-limit");
+
+
+const app = express();
 
 dotenv.config();
 require("./config/passport")(passport);
@@ -39,31 +46,32 @@ const jobsRouter = require("./routes/jobs-routes");
 const googAuthRouter = require("./routes/googAuth-routes");
 const geminiRouter = require("./routes/gemini-route");
 
-const errorHandlerMiddleware = require("./middleware/error-handler")
-
-// app.options('*',function(req,res,next){
-//     res.header("Access-Control-Allow-Origin", 'http://localhost:5173');
-//     res.header("Access-Control-Allow-Credentials", "true");
-//     res.header("Access-Control-Allow-Headers", ['X-Requested-With','content-type','credentials']);
-//     res.header('Access-Control-Allow-Methods', 'GET,POST');
-//     res.status(200);
-//     next()
-//   })
+//MIDDLEWARE
+const authenticateUser = require("./middleware/authentication");
+const errorHandlerMiddleware = require("./middleware/error-handler");
+const notFoundMiddleware = require("./middleware/not-found");
 
 app.use(express.json());
-//app.use(express.urlencoded({ extended: false }));
+app.use(helmet());
+app.use(cors());
+app.use(rateLimiter({
+  windowMs: 15 * 60 * 1000,
+  limit: 100
+}))
+
 
 app.get("/", (req, res) => {
     res.send("Job Tracker App");
 })
 
 app.use('/api/v1/user', userRouter);
-app.use('/api/v1/jobs', jobsRouter);
+app.use('/api/v1/jobs', authenticateUser, jobsRouter);
 app.use('/api/v1/gauth', googAuthRouter);
 app.use("/api/v1/gemini", geminiRouter);
 
+//ERROR HANDLER
 app.use(errorHandlerMiddleware);
-
+app.use(notFoundMiddleware)
 
 async function start(){
   const port = process.env.PORT || 9000;
