@@ -41,15 +41,15 @@ app.use(passport.session());
 app.use(express.static("./public"));
 
 //ROUTES
-const userRouter = require('./routes/user-routes');
-const jobsRouter = require("./routes/jobs-routes");
-const googAuthRouter = require("./routes/googAuth-routes");
-const geminiRouter = require("./routes/gemini-route");
+const userRouter = require('./api/routes/user-routes');
+const jobsRouter = require("./api/routes/jobs-routes");
+const googAuthRouter = require("./api/routes/googAuth-routes");
+const geminiRouter = require("./api/routes/gemini-route");
 
 //MIDDLEWARE
-const authenticateUser = require("./middleware/authentication");
-const errorHandlerMiddleware = require("./middleware/error-handler");
-const notFoundMiddleware = require("./middleware/not-found");
+const authenticateUser = require("./api/middleware/authentication");
+const errorHandlerMiddleware = require("./api/middleware/error-handler");
+const notFoundMiddleware = require("./api/middleware/not-found");
 
 app.use(express.json());
 app.use(helmet());

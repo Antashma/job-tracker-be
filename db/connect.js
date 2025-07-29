@@ -8,6 +8,5 @@ const connectDB = () => {
     return mongoose
      .connect(uri)
  }
-// run().catch(console.dir);
 
 module.exports = connectDB;

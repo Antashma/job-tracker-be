@@ -5,7 +5,7 @@ const {
   Type,
 } = require('@google/genai');
 const { CustomAPIError } = require('../errors');
-const data = require("../test/gemini-submission.json")
+const data = require("../../test/gemini-submission.json")
 
 async function fetchGeminiResponse() {
   const ai = new GoogleGenAI({
